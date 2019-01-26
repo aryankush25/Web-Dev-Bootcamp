@@ -1,29 +1,15 @@
 var express = require("express");
 var app = express();
 var bodyParser = require("body-parser");
-var mongoose = require("mongoose", { useNewUrlParser: true });
+var mongoose = require("mongoose");
 var Campground = require("./models/campground");
 var seedDB = require("./seeds");
 
 seedDB();
-mongoose.connect("mongodb://localhost/yelp_camp");
+mongoose.connect("mongodb://localhost/yelp_camp_v3");
 app.use(bodyParser.urlencoded({ extended: true }));
 app.set("view engine", "ejs");
 
-
-// Campground.create(
-//     {
-//         name: "Goa",
-//         image: "https://www.hlimg.com/images/places2see/738X538/Goa-cover-image_1472037578p.jpg",
-//         descreption: "This Is A very God Beach"
-//     }, function(err, campground){
-//         if (err) {
-//             console.log(err);
-//         } else {
-//             console.log(campground);
-//         }
-//     }
-// );
 
 app.get("/", function(req, res) {
     res.render("landing");
@@ -42,22 +28,22 @@ app.get("/campgrounds", function(req, res) {
 app.post("/campgrounds", function(req, res) {
     var name = req.body.name;
     var image = req.body.image;
-    var desc = req.body.descreption;
+    var desc = req.body.description;
     
     var newCampground = {
         name: name,
         image: image,
-        descreption: desc
+        description: desc
     };
-    Campground.create(newCampground, function(err, campground){
+    Campground.create(newCampground, function(err, newlyCreated){
             if (err) {
                 console.log(err);
             } else {
-                console.log(campground);
+                console.log(newlyCreated);
+                res.redirect("/campgrounds");
             }
         }
     );
-    res.redirect("/campgrounds");
 });
 
 app.get("/campgrounds/new", function(req, res) {
@@ -66,11 +52,13 @@ app.get("/campgrounds/new", function(req, res) {
 
 app.get("/campgrounds/:id", function(req, res) {
     
-    Campground.findById(req.params.id, function(err, foundCampground) {
+    Campground.findById(req.params.id).populate("comments").exec(function(err, foundCampground) {
         if (err) {
             console.log(err);
         } else {
-            res.render("show", { campgrounds: foundCampground });
+            console.log(foundCampground.name);
+            console.log(foundCampground.description);
+            res.render("show.ejs", { campgrounds: foundCampground });
         }
     });
 });
