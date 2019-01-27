@@ -1,0 +1,26 @@
+<% include ../partials/header.ejs %>
+
+<div class="container">
+    <div>
+        
+        <h1 style="text-align: center; width: 100%;">Create A New CampGround</h1>
+        
+        <div style="width: 30%; margin: 25px auto;">
+        
+            <form action="/campgrounds" method="POST">
+                <div class="form-group">
+                    <input type="text" class="form-control" placeholder="Name" name="name">
+                    
+                    <input type="text" class="form-control" placeholder="Image URL" name="image">
+                    
+                    <input type="text" class="form-control" placeholder="Descreption" name="descreption">
+                </div>
+                <button class="btn btn-lg btn-primary btn-block">Submit</button>
+            </form>
+            <a href="/campgrounds">Go Back</a>
+        </div>
+    
+    </div>
+</div>
+
+<% include ../partials/footer.ejs %>
